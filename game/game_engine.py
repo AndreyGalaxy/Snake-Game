@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from config.settings import *
 from snake import Snake
 from food import Food
 

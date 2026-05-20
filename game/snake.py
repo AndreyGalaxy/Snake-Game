@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from config.settings import *
 
 class Snake:
     def __init__(self):

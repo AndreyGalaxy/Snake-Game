@@ -1,6 +1,6 @@
 import pygame
 import random
-from settings import *
+from config.settings import *
 
 class Food:
     def __init__(self, snake_body):
