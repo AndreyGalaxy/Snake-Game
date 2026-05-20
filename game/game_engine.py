@@ -1,7 +1,7 @@
 import pygame
 from config.settings import *
-from snake import Snake
-from food import Food
+from game.snake import Snake
+from game.food import Food
 
 class Game:
     def __init__(self):
@@ -175,7 +175,7 @@ class Game:
         title_font = pygame.font.SysFont(None, 72)
         small_font = pygame.font.SysFont(None, 36)
 
-        title = title_font.render("Snake Game", True, WHITE)
+        title = title_font.render("Snake Game", True, GREEN)
         prompt = small_font.render("Press SPACE to Start", True, GRAY)
 
         self.screen.blit(title, title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 40)))
