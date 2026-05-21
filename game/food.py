@@ -26,4 +26,6 @@ class Food:
         x = self.position[0] * GRID_SIZE
         y = self.position[1] * GRID_SIZE
 
-        pygame.draw.rect(screen, RED, (x, y, GRID_SIZE, GRID_SIZE))
+        center = (x + GRID_SIZE // 2, y + GRID_SIZE // 2)
+
+        pygame.draw.circle(screen, RED, center, GRID_SIZE // 2 - 2)

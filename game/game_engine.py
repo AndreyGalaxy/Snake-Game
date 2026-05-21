@@ -14,6 +14,7 @@ class Game:
 
         self.move_timer = 0
         self.move_delay = 100
+        self.flash_timer = 0
 
         self.snake = Snake()
         self.food = Food(self.snake.body)
@@ -101,6 +102,7 @@ class Game:
         head = self.snake.body[0]
 
         if head == self.food.position:
+            self.flash_timer = 3
             self.snake.grow()
             self.food.respawn(self.snake.body)
             self.score += 1
@@ -124,43 +126,28 @@ class Game:
     
     def draw_gameplay(self):
         self.screen.fill(BLACK)
+        self.draw_grid()
 
         self.snake.draw(self.screen)
         self.food.draw(self.screen)
 
+        if self.flash_timer > 0:
+            flash_overlay = pygame.Surface((WIDTH, HEIGHT))
+            flash_overlay.set_alpha(10)
+            flash_overlay.fill(WHITE)
+            self.screen.blit(flash_overlay, (0, 0))
+            self.flash_timer -= self.clock.get_time()
+
+        ui_rect = pygame.Rect(0, PLAY_HEIGHT, WIDTH, UI_HEIGHT)
+        pygame.draw.rect(self.screen, DARK_GRAY, ui_rect)
+        pygame.draw.line(self.screen, GRAY, (0, PLAY_HEIGHT), (WIDTH, PLAY_HEIGHT), 2)
+
         score_text = self.font.render(f"Score: {self.score}", True, WHITE)
 
-        x = WIDTH - score_text.get_width() - 10
-        y = HEIGHT - score_text.get_height() - 10
+        x = WIDTH - score_text.get_width() - 20
+        y = PLAY_HEIGHT + (UI_HEIGHT - score_text.get_height()) // 2
 
         self.screen.blit(score_text, (x, y))
-
-    def draw_game_over(self):
-        overlay = pygame.Surface((WIDTH, HEIGHT))
-        overlay.set_alpha(180)
-        overlay.fill(BLACK)
-
-        self.screen.blit(overlay, (0, 0))
-        
-        font_large = pygame.font.SysFont(None, 72)
-        font_small = pygame.font.SysFont(None, 36)
-
-        game_over_text = font_large.render("Game Over", True, RED)
-        shadow = font_large.render("Game Over", True, LIGHT_GRAY)
-        score_text = font_small.render(f"Final Score: {self.score}", True, WHITE)
-        restart_text = font_small.render("Press R to Restart", True, GRAY)
-
-        screen_center_x = WIDTH // 2
-        screen_center_y = HEIGHT // 2
-
-        go_rect = game_over_text.get_rect(center=(screen_center_x, screen_center_y - 40))
-        score_rect = score_text.get_rect(center=(screen_center_x, screen_center_y + 10))
-        restart_rect = restart_text.get_rect(center=(screen_center_x, screen_center_y + 50))
-
-        self.screen.blit(shadow, (go_rect.x + 2, go_rect.y + 2))
-        self.screen.blit(game_over_text, go_rect)
-        self.screen.blit(score_text, score_rect)
-        self.screen.blit(restart_text, restart_rect)
 
     def reset_game(self):
         self.snake = Snake()
@@ -204,3 +191,37 @@ class Game:
         self.screen.blit(shadow, (pause_rect.x + 2, pause_rect.y + 2))
         self.screen.blit(pause_text, pause_rect)
         self.screen.blit(prompt_text, prompt_rect)
+
+    def draw_game_over(self):
+        overlay = pygame.Surface((WIDTH, HEIGHT))
+        overlay.set_alpha(180)
+        overlay.fill(BLACK)
+
+        self.screen.blit(overlay, (0, 0))
+        
+        font_large = pygame.font.SysFont(None, 72)
+        font_small = pygame.font.SysFont(None, 36)
+
+        game_over_text = font_large.render("Game Over", True, LIGHT_RED)
+        shadow = font_large.render("Game Over", True, LIGHT_GRAY)
+        score_text = font_small.render(f"Final Score: {self.score}", True, WHITE)
+        restart_text = font_small.render("Press R to Restart", True, GRAY)
+
+        screen_center_x = WIDTH // 2
+        screen_center_y = HEIGHT // 2
+
+        go_rect = game_over_text.get_rect(center=(screen_center_x, screen_center_y - 40))
+        score_rect = score_text.get_rect(center=(screen_center_x, screen_center_y + 10))
+        restart_rect = restart_text.get_rect(center=(screen_center_x, screen_center_y + 50))
+
+        self.screen.blit(shadow, (go_rect.x + 2, go_rect.y + 2))
+        self.screen.blit(game_over_text, go_rect)
+        self.screen.blit(score_text, score_rect)
+        self.screen.blit(restart_text, restart_rect)
+        
+    def draw_grid(self):
+        for x in range(0, PLAY_WIDTH, GRID_SIZE):
+            pygame.draw.line(self.screen, DARK_GRAY, (x, 0), (x, PLAY_HEIGHT))
+
+        for y in range(0, PLAY_HEIGHT, GRID_SIZE):
+            pygame.draw.line(self.screen, DARK_GRAY, (0, y), (PLAY_WIDTH, y))

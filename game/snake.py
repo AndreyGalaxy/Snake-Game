@@ -70,13 +70,18 @@ class Snake:
         
         return False
 
-    def draw(self, screen, progress=1.0):
-        for segment in self.body:
+    def draw(self, screen):
+        for i, segment in enumerate(self.body):
 
             x = segment[0] * GRID_SIZE
             y = segment[1] * GRID_SIZE
 
-            pygame.draw.rect(screen, GREEN, (x, y, GRID_SIZE, GRID_SIZE))
+            rect = pygame.Rect(x + 1, y + 1, GRID_SIZE - 2, GRID_SIZE - 2)
+
+            if i == 0:
+                pygame.draw.rect(screen, GREEN, rect)
+            else:
+                pygame.draw.rect(screen, DARK_GREEN, rect)
 
     def update_direction(self):
         while self.direction_queue:
