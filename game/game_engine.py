@@ -5,8 +5,9 @@ from game.food import Food
 
 class Game:
     def __init__(self):
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
         pygame.display.set_caption("Snake Game")
+        self.update_layout()
 
         self.clock = pygame.time.Clock()
         self.running = True
@@ -50,6 +51,15 @@ class Game:
             elif self.game_state == "GAME_OVER":
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                     self.reset_game()
+
+            elif event.type == pygame.VIDEORESIZE:
+                MIN_WIDTH = PLAY_WIDTH
+                MIN_HEIGHT = PLAY_HEIGHT + UI_HEIGHT
+                WIDTH = max(event.w, MIN_WIDTH)
+                HEIGHT = max(event.h, MIN_HEIGHT)
+                self.screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+
+                self.update_layout()
 
             elif self.game_state == "PLAYING":        
                 if event.type == pygame.KEYDOWN:
@@ -132,20 +142,20 @@ class Game:
         self.food.draw(self.screen)
 
         if self.flash_timer > 0:
-            flash_overlay = pygame.Surface((WIDTH, HEIGHT))
+            flash_overlay = pygame.Surface((PLAY_WIDTH, PLAY_HEIGHT))
             flash_overlay.set_alpha(10)
             flash_overlay.fill(WHITE)
             self.screen.blit(flash_overlay, (0, 0))
             self.flash_timer -= self.clock.get_time()
 
-        ui_rect = pygame.Rect(0, PLAY_HEIGHT, WIDTH, UI_HEIGHT)
+        ui_rect = pygame.Rect(0, HEIGHT - UI_HEIGHT, WIDTH, UI_HEIGHT)
         pygame.draw.rect(self.screen, DARK_GRAY, ui_rect)
-        pygame.draw.line(self.screen, GRAY, (0, PLAY_HEIGHT), (WIDTH, PLAY_HEIGHT), 2)
+        pygame.draw.line(self.screen, GRAY, (0, HEIGHT - UI_HEIGHT), (WIDTH, HEIGHT - UI_HEIGHT), 2)
 
         score_text = self.font.render(f"Score: {self.score}", True, WHITE)
 
         x = WIDTH - score_text.get_width() - 20
-        y = PLAY_HEIGHT + (UI_HEIGHT - score_text.get_height()) // 2
+        y = HEIGHT - UI_HEIGHT + (UI_HEIGHT - score_text.get_height()) // 2
 
         self.screen.blit(score_text, (x, y))
 
@@ -221,7 +231,14 @@ class Game:
         
     def draw_grid(self):
         for x in range(0, PLAY_WIDTH, GRID_SIZE):
-            pygame.draw.line(self.screen, DARK_GRAY, (x, 0), (x, PLAY_HEIGHT))
+            pygame.draw.line(self.screen, DARK_GRAY, (x + PLAY_OFFSET_X, PLAY_OFFSET_Y), (x + PLAY_OFFSET_X, PLAY_OFFSET_Y + PLAY_HEIGHT))
 
         for y in range(0, PLAY_HEIGHT, GRID_SIZE):
-            pygame.draw.line(self.screen, DARK_GRAY, (0, y), (PLAY_WIDTH, y))
+            pygame.draw.line(self.screen, DARK_GRAY, (PLAY_OFFSET_X, y + PLAY_OFFSET_Y), (PLAY_OFFSET_X + PLAY_WIDTH, y + PLAY_OFFSET_Y))
+
+        pygame.draw.rect(self.screen, GRAY, (PLAY_OFFSET_X, PLAY_OFFSET_Y, PLAY_WIDTH, PLAY_HEIGHT), 2)
+
+    def update_layout(self):
+        global PLAY_OFFSET_X, PLAY_OFFSET_Y
+        PLAY_OFFSET_X = (WIDTH - PLAY_WIDTH) // 2
+        PLAY_OFFSET_Y = (HEIGHT - UI_HEIGHT - PLAY_HEIGHT) // 2

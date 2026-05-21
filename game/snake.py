@@ -73,8 +73,8 @@ class Snake:
     def draw(self, screen):
         for i, segment in enumerate(self.body):
 
-            x = segment[0] * GRID_SIZE
-            y = segment[1] * GRID_SIZE
+            x = PLAY_OFFSET_X + segment[0] * GRID_SIZE
+            y = PLAY_OFFSET_Y + segment[1] * GRID_SIZE
 
             rect = pygame.Rect(x + 1, y + 1, GRID_SIZE - 2, GRID_SIZE - 2)
 

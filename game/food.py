@@ -23,8 +23,8 @@ class Food:
                 break
 
     def draw(self, screen):
-        x = self.position[0] * GRID_SIZE
-        y = self.position[1] * GRID_SIZE
+        x = PLAY_OFFSET_X + self.position[0] * GRID_SIZE
+        y = PLAY_OFFSET_Y + self.position[1] * GRID_SIZE
 
         center = (x + GRID_SIZE // 2, y + GRID_SIZE // 2)
 
