@@ -22,10 +22,10 @@ class Food:
                 self.position = new_position
                 break
 
-    def draw(self, screen):
-        x = PLAY_OFFSET_X + self.position[0] * GRID_SIZE
-        y = PLAY_OFFSET_Y + self.position[1] * GRID_SIZE
+    def draw(self, screen, offset_x, offset_y, tile_size):
+        x = offset_x + self.position[0] * tile_size
+        y = offset_y + self.position[1] * tile_size
 
-        center = (x + GRID_SIZE // 2, y + GRID_SIZE // 2)
+        center = (x + tile_size // 2, y + tile_size // 2)
 
-        pygame.draw.circle(screen, RED, center, GRID_SIZE // 2 - 2)
+        pygame.draw.circle(screen, RED, center, tile_size // 2 - 2)

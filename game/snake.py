@@ -5,6 +5,12 @@ class Snake:
     def __init__(self):
         self.body = [(5, 5), (4, 5), (3, 5)]
         self.direction = "RIGHT"
+
+        self.position = pygame.Vector2(self.body[0])
+        self.velocity = pygame.Vector2(0, 0)
+        self.speed = 10
+        self.smoothing = 0.15
+
         self.direction_queue = []
         self.grow_pending = False
 
@@ -70,18 +76,17 @@ class Snake:
         
         return False
 
-    def draw(self, screen):
+    def draw(self, screen, offset_x, offset_y, tile_size):
         for i, segment in enumerate(self.body):
 
-            x = PLAY_OFFSET_X + segment[0] * GRID_SIZE
-            y = PLAY_OFFSET_Y + segment[1] * GRID_SIZE
+            x = offset_x + segment[0] * tile_size
+            y = offset_y + segment[1] * tile_size
 
-            rect = pygame.Rect(x + 1, y + 1, GRID_SIZE - 2, GRID_SIZE - 2)
+            rect = pygame.Rect(x + 1, y + 1, tile_size - 2, tile_size - 2)
 
-            if i == 0:
-                pygame.draw.rect(screen, GREEN, rect)
-            else:
-                pygame.draw.rect(screen, DARK_GREEN, rect)
+            color = GREEN if i == 0 else DARK_GREEN
+            
+            pygame.draw.rect(screen, color, rect)
 
     def update_direction(self):
         while self.direction_queue:
@@ -92,3 +97,10 @@ class Snake:
                 break
             else:
                 self.direction_queue.pop(0)
+
+    def update(self, delta_time):
+        direction_vector = pygame.Vector2(self.direction)
+        target_velocity = direction_vector * self.speed
+        self.velocity += (target_velocity - self.velocity) * self.smoothing
+        self.position += self.velocity * delta_time
+        self.body[0] = (int(round(self.position.x)), int(round(self.position.y)))

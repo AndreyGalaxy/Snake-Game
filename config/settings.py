@@ -1,10 +1,10 @@
 # --- Game Speed ---
-FPS = 5
+FPS = 120
 
 # --- Game World ---
 GRID_SIZE = 30
-GRID_WIDTH = 24
-GRID_HEIGHT = 12
+GRID_WIDTH = 32
+GRID_HEIGHT = 24
 
 # --- Play Area ---
 PLAY_WIDTH = GRID_WIDTH * GRID_SIZE
@@ -14,12 +14,8 @@ PLAY_HEIGHT = GRID_HEIGHT * GRID_SIZE
 UI_HEIGHT = GRID_SIZE * 2
 
 # --- Window ---
-WIDTH = PLAY_WIDTH
-HEIGHT = PLAY_HEIGHT + UI_HEIGHT
-
-# --- Play Area Offset ---
-PLAY_OFFSET_X = (WIDTH - PLAY_WIDTH) // 2
-PLAY_OFFSET_Y = (HEIGHT - UI_HEIGHT - PLAY_HEIGHT) // 2
+WIDTH = 1200
+HEIGHT = 800
 
 # --- Colors ---
 BLACK = (0, 0, 0)
